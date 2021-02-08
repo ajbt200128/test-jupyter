@@ -1,0 +1,110 @@
+#+HTML_HEAD: <link rel="stylesheet" type="text/css" href="https://gongzhitaao.org/orgcss/org.css"/>
+#+PROPERTY: header-args :noweb strip-export
+
+* Quiz C2-2 Writeup
+** Question 3
+  Let's talk about whatever 
+  #+name: init
+  #+begin_src C :exports results
+#include <stdio.h>
+#include <string.h>
+  #+end_src
+
+  #+RESULTS: init
+  
+  First let's look at the struct:
+  #+name: struct
+  #+begin_src C 
+  <<init>>
+    typedef struct{
+      char ** value;
+      char * another_value;
+    }thing_t;
+  #+end_src
+
+  #+RESULTS: struct
+
+   /explain struct here/
+
+   Now let's look at what's in main:
+
+   Line
+#+name: b1
+#+begin_src C
+  <<struct>>
+  int main() {
+    char * string1 = "a b c ";
+    char ** string_ptr = &string1;
+    thing_t thing;
+#+end_src
+
+by
+
+#+name: b2
+#+begin_src C 
+  <<b1>>
+     thing.another_value = string1++;
+     thing.value = &(thing.another_value);
+
+#+end_src
+
+Line
+
+#+begin_src C :tangle yes :exports both
+<<b2>>
+    if(strcmp(string1,*(thing.value)) == 0){
+      printf("Welcome!");
+    }else{
+      printf("Go Away!!");
+    }
+  }
+#+end_src
+
+#+RESULTS:
+: Go Away!!
+*** Option 1
+    
+
+#+begin_src C :tangle q3-1.c  :exports both
+  <<struct>>
+  int main() {
+    char * string1 = "a b c ";
+    char ** string_ptr = &string1;
+    thing_t thing;
+    thing.another_value = string1++;
+    thing.value = &(thing.another_value);
+    if(strcmp(string1,*(thing.value++)) == 0){
+      printf("Welcome!");
+    }else{
+      printf("Go Away!!");
+    }
+  }
+#+end_src
+
+#+RESULTS:
+: Go Away!!
+
+    This one doesn't work because...
+*** Option 2
+    
+#+begin_src C :tangle q3-2.c :noweb strip-export :exports both
+  <<struct>>
+  int main() {
+    char * string1 = "a b c ";
+    char ** string_ptr = &string1;
+    thing_t thing;
+    thing.another_value = string1++;
+    thing.value = &(thing.another_value);
+    thing.another_value = string1;
+    if(strcmp(string1,*(thing.value++)) == 0){
+      printf("Welcome!");
+    }else{
+      printf("Go Away!!");
+    }
+  }
+#+end_src
+
+#+RESULTS:
+: Welcome!
+
+    This one does work because...
